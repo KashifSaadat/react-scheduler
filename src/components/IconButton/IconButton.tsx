@@ -24,6 +24,7 @@ const IconButton = ({
       $hasChildren={!!children}
       disabled={isDisabled}
       $variant={$variant}
+      className="icon-button"
     >
       <Icon
         iconName={iconName}

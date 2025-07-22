@@ -38,8 +38,8 @@ const Topbar: FC<TopbarProps> = ({ width, showThemeToggle, toggleTheme }) => {
   };
 
   return (
-    <Wrapper width={width}>
-      <Filters>
+    <Wrapper width={width} className="topbar-wrapper">
+      <Filters className="topbar-filters">
         {filterButtonState >= 0 && (
           <IconButton
             $variant={filterButtonState ? "filled" : "outlined"}
@@ -57,20 +57,20 @@ const Topbar: FC<TopbarProps> = ({ width, showThemeToggle, toggleTheme }) => {
           </IconButton>
         )}
       </Filters>
-      <NavigationWrapper>
-        <NavBtn disabled={!data?.length} onClick={handleGoPrev}>
+      <NavigationWrapper className="topbar-navigation">
+        <NavBtn disabled={!data?.length} onClick={handleGoPrev} className="topbar-nav-prev">
           <Icon iconName="arrowLeft" height="15" fill={colors.textPrimary} />
           {topbar.prev}
         </NavBtn>
-        <Today onClick={handleGoToday}>{topbar.today}</Today>
-        <NavBtn disabled={!data?.length} onClick={handleGoNext}>
+        <Today onClick={handleGoToday} className="topbar-today">{topbar.today}</Today>
+        <NavBtn disabled={!data?.length} onClick={handleGoNext} className="topbar-nav-next">
           {topbar.next}
           <Icon iconName="arrowRight" height="15" fill={colors.textPrimary} />
         </NavBtn>
       </NavigationWrapper>
-      <OptionsContainer>
+      <OptionsContainer className="topbar-options">
         {showThemeToggle && <Toggle toggleTheme={toggleTheme} />}
-        <Zoom>
+        <Zoom className="topbar-zoom">
           {topbar.view}
           <IconButton
             isDisabled={!isPrevZoom}

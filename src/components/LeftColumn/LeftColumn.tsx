@@ -23,15 +23,16 @@ const LeftColumn: FC<LeftColumnProps> = ({
   const toggleFocus = () => setIsInputFocused((prev) => !prev);
 
   return (
-    <StyledWrapper>
-      <StyledLeftColumnHeader>
-        <StyledInputWrapper $isFocused={isInputFocused}>
+    <StyledWrapper className="left-column-wrapper">
+      <StyledLeftColumnHeader className="left-column-header">
+        <StyledInputWrapper $isFocused={isInputFocused} className="left-column-search-wrapper">
           <StyledInput
             placeholder={search}
             value={searchInputValue}
             onChange={onSearchInputChange}
             onFocus={toggleFocus}
             onBlur={toggleFocus}
+            className="left-column-search-input"
           />
           <Icon iconName="search" />
         </StyledInputWrapper>

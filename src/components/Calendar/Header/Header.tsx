@@ -50,10 +50,10 @@ const Header: FC<HeaderProps> = ({ zoom, topBarWidth, showThemeToggle, toggleThe
   }, [date, zoom, handleResize]);
 
   return (
-    <StyledOuterWrapper>
+    <StyledOuterWrapper className="header-outer-wrapper">
       <Topbar width={topBarWidth} showThemeToggle={showThemeToggle} toggleTheme={toggleTheme} />
-      <StyledWrapper id={canvasHeaderWrapperId}>
-        <StyledCanvas ref={canvasRef} />
+      <StyledWrapper id={canvasHeaderWrapperId} className="header-wrapper">
+        <StyledCanvas ref={canvasRef} className="header-canvas" />
       </StyledWrapper>
     </StyledOuterWrapper>
   );

@@ -42,10 +42,10 @@ const ConfigPanel: FC<ConfigPanelProps> = ({ values, onSubmit }) => {
   };
 
   return (
-    <StyledWrapper onMouseLeave={() => setIsExpanded(false)} $isExpanded={isExpanded}>
-      <StyledForm onSubmit={handleSubmit}>
-        <StyledInnerWrapper>
-          <StyledLabel htmlFor={formFieldsIds.peopleCount}>People count: </StyledLabel>
+    <StyledWrapper onMouseLeave={() => setIsExpanded(false)} $isExpanded={isExpanded} className="config-panel-wrapper">
+      <StyledForm onSubmit={handleSubmit} className="config-panel-form">
+        <StyledInnerWrapper className="config-panel-field">
+          <StyledLabel htmlFor={formFieldsIds.peopleCount} className="config-panel-label">People count: </StyledLabel>
           <StyledInput
             id={formFieldsIds.peopleCount}
             name={formFieldsIds.peopleCount}
@@ -54,10 +54,11 @@ const ConfigPanel: FC<ConfigPanelProps> = ({ values, onSubmit }) => {
             onChange={handleChange}
             min={0}
             title="How many people to display? Default: 5"
+            className="config-panel-input"
           />
         </StyledInnerWrapper>
-        <StyledInnerWrapper>
-          <StyledLabel htmlFor={formFieldsIds.projectsPerYear}>Projects per year: </StyledLabel>
+        <StyledInnerWrapper className="config-panel-field">
+          <StyledLabel htmlFor={formFieldsIds.projectsPerYear} className="config-panel-label">Projects per year: </StyledLabel>
           <StyledInput
             id={formFieldsIds.projectsPerYear}
             name={formFieldsIds.projectsPerYear}
@@ -66,10 +67,11 @@ const ConfigPanel: FC<ConfigPanelProps> = ({ values, onSubmit }) => {
             onChange={handleChange}
             min={0}
             title="Projects / year / person. Default: 5"
+            className="config-panel-input"
           />
         </StyledInnerWrapper>
-        <StyledInnerWrapper>
-          <StyledLabel htmlFor={formFieldsIds.yearsCovered}>Years covered: </StyledLabel>
+        <StyledInnerWrapper className="config-panel-field">
+          <StyledLabel htmlFor={formFieldsIds.yearsCovered} className="config-panel-label">Years covered: </StyledLabel>
           <StyledInput
             id={formFieldsIds.yearsCovered}
             name={formFieldsIds.yearsCovered}
@@ -78,10 +80,11 @@ const ConfigPanel: FC<ConfigPanelProps> = ({ values, onSubmit }) => {
             onChange={handleChange}
             min={0}
             title="How many years back and forward? Default: 0"
+            className="config-panel-input"
           />
         </StyledInnerWrapper>
-        <StyledInnerWrapper>
-          <StyledLabel htmlFor={formFieldsIds.startDate}>Starting date </StyledLabel>
+        <StyledInnerWrapper className="config-panel-field">
+          <StyledLabel htmlFor={formFieldsIds.startDate} className="config-panel-label">Starting date </StyledLabel>
           <StyledInput
             id={formFieldsIds.startDate}
             name={formFieldsIds.startDate}
@@ -89,10 +92,11 @@ const ConfigPanel: FC<ConfigPanelProps> = ({ values, onSubmit }) => {
             type="date"
             onChange={handleDateChange}
             title="When do you want to start your scheduler? Default: today"
+            className="config-panel-input"
           ></StyledInput>
         </StyledInnerWrapper>
-        <StyledInnerWrapper>
-          <StyledLabel htmlFor={formFieldsIds.maxRecordsPerPage}>Records/page: </StyledLabel>
+        <StyledInnerWrapper className="config-panel-field">
+          <StyledLabel htmlFor={formFieldsIds.maxRecordsPerPage} className="config-panel-label">Records/page: </StyledLabel>
           <StyledInput
             id={formFieldsIds.maxRecordsPerPage}
             name={formFieldsIds.maxRecordsPerPage}
@@ -101,22 +105,24 @@ const ConfigPanel: FC<ConfigPanelProps> = ({ values, onSubmit }) => {
             onChange={handleChange}
             min={1}
             title="How many records per page? Default: 10"
+            className="config-panel-input"
           />
         </StyledInnerWrapper>
-        <StyledInnerWrapper>
-          <StyledLabel htmlFor={formFieldsIds.isFullscreen}>Fullscreen: </StyledLabel>
+        <StyledInnerWrapper className="config-panel-field">
+          <StyledLabel htmlFor={formFieldsIds.isFullscreen} className="config-panel-label">Fullscreen: </StyledLabel>
           <StyledCheckbox
             id={formFieldsIds.isFullscreen}
             name={formFieldsIds.isFullscreen}
             checked={inputValues.isFullscreen}
             type="checkbox"
             onChange={handleChange}
+            className="config-panel-checkbox"
           />
         </StyledInnerWrapper>
         {isExpanded ? (
-          <StyledButton type="submit">Change</StyledButton>
+          <StyledButton type="submit" className="config-panel-button config-panel-submit">Change</StyledButton>
         ) : (
-          <StyledButton onClick={() => setIsExpanded(true)} type="button">
+          <StyledButton onClick={() => setIsExpanded(true)} type="button" className="config-panel-button config-panel-expand">
             Expand config panel
           </StyledButton>
         )}

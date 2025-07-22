@@ -84,8 +84,9 @@ const Scheduler = ({
               $showScroll={!!data.length}
               id={outsideWrapperId}
               ref={outsideWrapperRef}
+              className="scheduler-outside-wrapper"
             >
-              <StyledInnerWrapper>
+              <StyledInnerWrapper className="scheduler-inner-wrapper">
                 <Calendar
                   data={data}
                   onTileClick={onTileClick}

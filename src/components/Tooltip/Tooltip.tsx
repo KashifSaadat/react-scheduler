@@ -54,30 +54,30 @@ const Tooltip: FC<TooltipProps> = ({ tooltipData, zoom }) => {
   }, [coords.x, width, disposition.overtime, coords.y, zoom]);
 
   return (
-    <StyledTooltipWrapper ref={tooltipRef}>
-      <StyledTooltipContent>
-        <StyledContentWrapper>
-          <StyledInnerWrapper>
+    <StyledTooltipWrapper ref={tooltipRef} className="tooltip-wrapper">
+      <StyledTooltipContent className="tooltip-content">
+        <StyledContentWrapper className="tooltip-content-inner">
+          <StyledInnerWrapper className="tooltip-taken-info">
             <Icon iconName="calendarWarning" height="14" />
-            <StyledTextWrapper>
-              <StyledText>{`${taken}: ${disposition.taken.hours}h ${disposition.taken.minutes}m`}</StyledText>
+            <StyledTextWrapper className="tooltip-text-wrapper">
+              <StyledText className="tooltip-text">{`${taken}: ${disposition.taken.hours}h ${disposition.taken.minutes}m`}</StyledText>
               {(disposition.overtime.hours > 0 || disposition.overtime.minutes > 0) && (
                 <>
                   &nbsp;{"-"}&nbsp;
-                  <StyledOvertimeWarning>{`${disposition.overtime.hours}h ${disposition.overtime.minutes}m ${over}`}</StyledOvertimeWarning>
+                  <StyledOvertimeWarning className="tooltip-overtime-warning">{`${disposition.overtime.hours}h ${disposition.overtime.minutes}m ${over}`}</StyledOvertimeWarning>
                 </>
               )}
             </StyledTextWrapper>
           </StyledInnerWrapper>
-          <StyledInnerWrapper>
+          <StyledInnerWrapper className="tooltip-free-info">
             <Icon iconName="calendarFree" height="14" />
-            <StyledTextWrapper>
-              <StyledText>{`${free}: ${disposition.free.hours}h ${disposition.free.minutes}m`}</StyledText>
+            <StyledTextWrapper className="tooltip-text-wrapper">
+              <StyledText className="tooltip-text">{`${free}: ${disposition.free.hours}h ${disposition.free.minutes}m`}</StyledText>
             </StyledTextWrapper>
           </StyledInnerWrapper>
         </StyledContentWrapper>
       </StyledTooltipContent>
-      <StyledTooltipBeak />
+      <StyledTooltipBeak className="tooltip-beak" />
     </StyledTooltipWrapper>
   );
 };

@@ -4,9 +4,9 @@ import { StyledText, StyledWrapper } from "./styles";
 const EmptyBox = () => {
   const { feelingEmpty } = useLanguage();
   return (
-    <StyledWrapper>
+    <StyledWrapper className="empty-box-wrapper">
       <EmptyBoxSvg />
-      <StyledText>{feelingEmpty}</StyledText>
+      <StyledText className="empty-box-text">{feelingEmpty}</StyledText>
     </StyledWrapper>
   );
 };

@@ -8,9 +8,9 @@ const Toggle: FC<ToggleProps> = ({ toggleTheme }) => {
   const theme = useTheme();
 
   return (
-    <ToggleContainer onClick={toggleTheme}>
-      <ToggleCircle />
-      <IconContainer>
+    <ToggleContainer onClick={toggleTheme} className="theme-toggle-container">
+      <ToggleCircle className="theme-toggle-circle" />
+      <IconContainer className="theme-toggle-icon">
         {theme.mode === "light" ? (
           <Icon iconName="sun" height="16" width="16" />
         ) : (

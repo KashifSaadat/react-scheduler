@@ -124,7 +124,7 @@ export const Calendar: FC<CalendarProps> = ({
   }, [data, searchPhrase]);
 
   return (
-    <StyledOuterWrapper>
+    <StyledOuterWrapper className="calendar-outer-wrapper">
       <LeftColumn
         data={page}
         pageNum={currentPageNum}
@@ -136,7 +136,7 @@ export const Calendar: FC<CalendarProps> = ({
         onSearchInputChange={handleSearch}
         onItemClick={onItemClick}
       />
-      <StyledInnerWrapper>
+      <StyledInnerWrapper className="calendar-inner-wrapper">
         <Header
           zoom={zoom}
           topBarWidth={topBarWidth}
@@ -152,7 +152,7 @@ export const Calendar: FC<CalendarProps> = ({
             onTileClick={onTileClick}
           />
         ) : (
-          <StyledEmptyBoxWrapper width={topBarWidth}>
+          <StyledEmptyBoxWrapper width={topBarWidth} className="calendar-empty-box-wrapper">
             <EmptyBox />
           </StyledEmptyBoxWrapper>
         )}

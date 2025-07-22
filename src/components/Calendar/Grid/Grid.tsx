@@ -78,13 +78,13 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(function Grid(
   }, [handleScrollPrev]);
 
   return (
-    <StyledWrapper id={canvasWrapperId}>
-      <StyledInnerWrapper ref={ref}>
-        <StyledSpan $position="left" ref={refLeft} />
+    <StyledWrapper id={canvasWrapperId} className="grid-wrapper">
+      <StyledInnerWrapper ref={ref} className="grid-inner-wrapper">
+        <StyledSpan $position="left" ref={refLeft} className="grid-scroll-trigger-left" />
         <Loader isLoading={isLoading} $position="left" />
-        <StyledCanvas ref={canvasRef} />
+        <StyledCanvas ref={canvasRef} className="grid-canvas" />
         <Tiles data={data} zoom={zoom} onTileClick={onTileClick} />
-        <StyledSpan ref={refRight} $position="right" />
+        <StyledSpan ref={refRight} $position="right" className="grid-scroll-trigger-right" />
         <Loader isLoading={isLoading} $position="right" />
       </StyledInnerWrapper>
     </StyledWrapper>
