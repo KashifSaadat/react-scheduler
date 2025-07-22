@@ -53,6 +53,8 @@ export type Config = {
   theme?: Theme;
   minZoom?: (typeof allZoomLevel)[number];
   maxZoom?: (typeof allZoomLevel)[number];
+  dateFormat?: string;
+  timeFormat?: string;
 };
 
 export type Theme = {
