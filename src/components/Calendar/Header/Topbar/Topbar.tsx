@@ -67,13 +67,13 @@ const Topbar: FC<TopbarProps> = ({ width, showThemeToggle, toggleTheme }) => {
           <Icon iconName="arrowLeft" height="15" fill={colors.textPrimary} />
           {topbar.prev}
         </NavBtn>
-        <TodayWrapper>
-          <Today onClick={handleGoToday}>{topbar.today}</Today>
+        <TodayWrapper className="topbar-today-wrapper">
+          <Today onClick={handleGoToday} className="topbar-today">{topbar.today}</Today>
           <DatePicker
             selected={new Date()}
             onSelect={(date) => handleGoDate(dayjs(date))}
             customInput={
-              <NavCalendarButton>
+              <NavCalendarButton className="topbar-calendar-button">
                 <Icon iconName="calendar" height="15" fill={colors.textPrimary} />
               </NavCalendarButton>
             }
