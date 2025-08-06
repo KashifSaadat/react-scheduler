@@ -71,7 +71,7 @@ const Topbar: FC<TopbarProps> = ({ width, showThemeToggle, toggleTheme }) => {
           <Today onClick={handleGoToday} className="topbar-today">{topbar.today}</Today>
           <DatePicker
             selected={new Date()}
-            onSelect={(date) => handleGoDate(dayjs(date))}
+            onChange={(date) => date && handleGoDate(dayjs(date))}
             customInput={
               <NavCalendarButton className="topbar-calendar-button">
                 <Icon iconName="calendar" height="15" fill={colors.textPrimary} />
