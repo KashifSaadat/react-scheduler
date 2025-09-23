@@ -1,11 +1,11 @@
 {
-  "name": "@bitnoi.se/react-scheduler",
-  "version": "0.4.0",
+  "name": "@kashifsaadat/react-scheduler",
+  "version": "0.0.7",
   "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Bitnoise/react-scheduler"
+    "url": "git+https://github.com/KashifSaadat/react-scheduler.git"
   },
   "keywords": [
     "scheduler",
