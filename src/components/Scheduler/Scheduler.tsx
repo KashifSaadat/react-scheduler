@@ -15,6 +15,7 @@ const Scheduler = ({
   config,
   startDate,
   onRangeChange,
+  onVisibleViewportChange,
   onTileClick,
   onFilterData,
   onClearFilterData,
@@ -78,6 +79,7 @@ const Scheduler = ({
             isLoading={!!isLoading}
             config={appConfig}
             onRangeChange={onRangeChange}
+            onVisibleViewportChange={onVisibleViewportChange}
             defaultStartDate={defaultStartDate}
             onFilterData={onFilterData}
             onClearFilterData={onClearFilterData}

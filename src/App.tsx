@@ -29,8 +29,21 @@ function App() {
     endDate: new Date()
   });
 
+  const [visibleViewport, setVisibleViewport] = useState<ParsedDatesRange>({
+    startDate: new Date(),
+    endDate: new Date()
+  });
+
   const handleRangeChange = useCallback((range: ParsedDatesRange) => {
     setRange(range);
+  }, []);
+
+  const handleVisibleViewportChange = useCallback((viewport: ParsedDatesRange) => {
+    setVisibleViewport(viewport);
+    console.log("Visible viewport changed:", {
+      start: viewport.startDate.toLocaleDateString(),
+      end: viewport.endDate.toLocaleDateString()
+    });
   }, []);
 
   const filteredData = useMemo(
@@ -48,6 +61,22 @@ function App() {
     [mocked, range.endDate, range.startDate]
   );
 
+  // Filter data based on visible viewport for display purposes
+  const visibleFilteredData = useMemo(
+    () =>
+      filteredData.map((person) => ({
+        ...person,
+        data: person.data.filter(
+          (project) =>
+            dayjs(project.startDate).isBetween(visibleViewport.startDate, visibleViewport.endDate) ||
+            dayjs(project.endDate).isBetween(visibleViewport.startDate, visibleViewport.endDate) ||
+            (dayjs(project.startDate).isBefore(visibleViewport.startDate, "day") &&
+              dayjs(project.endDate).isAfter(visibleViewport.endDate, "day"))
+        )
+      })),
+    [filteredData, visibleViewport.endDate, visibleViewport.startDate]
+  );
+
   const handleFilterData = () => console.log(`Filters button was clicked.`);
 
   const handleTileClick = (data: SchedulerProjectData) =>
@@ -58,10 +87,27 @@ function App() {
   return (
     <>
       <ConfigPanel values={values} onSubmit={setValues} />
+      
+      {/* Visible Viewport Indicator */}
+      <div style={{ 
+        padding: '10px', 
+        backgroundColor: '#f0f0f0', 
+        borderBottom: '1px solid #ccc',
+        fontSize: '14px',
+        fontFamily: 'Inter, sans-serif'
+      }}>
+        <strong>Full Range:</strong> {range.startDate.toLocaleDateString()} - {range.endDate.toLocaleDateString()}
+        <br />
+        <strong>Visible Viewport:</strong> {visibleViewport.startDate.toLocaleDateString()} - {visibleViewport.endDate.toLocaleDateString()}
+        <br />
+        <strong>Projects in Visible Viewport:</strong> {visibleFilteredData.reduce((total, person) => total + person.data.length, 0)}
+      </div>
+      
       {isFullscreen ? (
         <Scheduler
           startDate={values.startDate ? new Date(values.startDate).toISOString() : undefined}
           onRangeChange={handleRangeChange}
+          onVisibleViewportChange={handleVisibleViewportChange}
           data={filteredData}
           isLoading={false}
           onTileClick={handleTileClick}
@@ -74,6 +120,7 @@ function App() {
           <Scheduler
             startDate={values.startDate ? new Date(values.startDate).toISOString() : undefined}
             onRangeChange={handleRangeChange}
+            onVisibleViewportChange={handleVisibleViewportChange}
             isLoading={false}
             data={filteredData}
             onTileClick={handleTileClick}

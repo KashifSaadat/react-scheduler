@@ -19,6 +19,7 @@ import {
   zoom2ButtonJump
 } from "@/constants";
 import { getCanvasWidth } from "@/utils/getCanvasWidth";
+import { getVisibleViewport } from "@/utils/getVisibleViewport";
 import { calendarContext } from "./calendarContext";
 import { CalendarProviderProps } from "./types";
 dayjs.extend(weekOfYear);
@@ -36,6 +37,7 @@ const CalendarProvider = ({
   config,
   defaultStartDate = dayjs(),
   onRangeChange,
+  onVisibleViewportChange,
   onFilterData,
   onClearFilterData
 }: CalendarProviderProps) => {
@@ -91,6 +93,14 @@ const CalendarProvider = ({
     setTilesCoords(coords);
   };
 
+  // Function to trigger visible viewport change callback
+  const triggerVisibleViewportChange = useCallback(() => {
+    if (onVisibleViewportChange && isInitialized) {
+      const viewport = getVisibleViewport(date, zoom);
+      onVisibleViewportChange(viewport);
+    }
+  }, [onVisibleViewportChange, date, zoom, isInitialized]);
+
   const loadMore = useCallback(
     (direction: Direction) => {
       const cols = getVisibleCols(zoom);
@@ -136,6 +146,24 @@ const CalendarProvider = ({
     return () => window.removeEventListener("resize", handleResize);
   }, [zoom]);
 
+  // Add scroll event listener to track visible viewport changes
+  useEffect(() => {
+    const outsideWrapperElement = document.getElementById(outsideWrapperId);
+    if (!outsideWrapperElement) return;
+
+    const debouncedViewportChange = debounce(triggerVisibleViewportChange, 100);
+    
+    const handleScroll = () => {
+      debouncedViewportChange();
+    };
+
+    outsideWrapperElement.addEventListener("scroll", handleScroll);
+    return () => {
+      outsideWrapperElement.removeEventListener("scroll", handleScroll);
+      debouncedViewportChange.cancel();
+    };
+  }, [triggerVisibleViewportChange]);
+
   useEffect(() => {
     onRangeChange?.(range);
   }, [onRangeChange, range]);
@@ -151,7 +179,9 @@ const CalendarProvider = ({
     moveHorizontalScroll("middle");
     setIsInitialized(true);
     setDate(defaultStartDate);
-  }, [defaultStartDate, isInitialized, moveHorizontalScroll]);
+    // Trigger initial viewport change after initialization
+    setTimeout(triggerVisibleViewportChange, 500);
+  }, [defaultStartDate, isInitialized, moveHorizontalScroll, triggerVisibleViewportChange]);
 
   const handleGoNext = () => {
     if (isLoading) return;
@@ -160,6 +190,8 @@ const CalendarProvider = ({
       zoom === 2 ? prev.add(zoom2ButtonJump, "hours") : prev.add(buttonWeeksJump, "weeks")
     );
     onRangeChange?.(range);
+    // Trigger viewport change after a short delay to allow scroll to complete
+    setTimeout(triggerVisibleViewportChange, 400);
   };
 
   const handleScrollNext = useCallback(() => {
@@ -178,6 +210,8 @@ const CalendarProvider = ({
       zoom === 2 ? prev.subtract(zoom2ButtonJump, "hours") : prev.subtract(buttonWeeksJump, "weeks")
     );
     onRangeChange?.(range);
+    // Trigger viewport change after a short delay to allow scroll to complete
+    setTimeout(triggerVisibleViewportChange, 400);
   };
 
   const handleScrollPrev = useCallback(() => {
@@ -194,8 +228,10 @@ const CalendarProvider = ({
     loadMore("middle");
     debounce(() => {
       moveHorizontalScroll("middle", "smooth");
+      // Trigger viewport change after scroll completes
+      setTimeout(triggerVisibleViewportChange, 600);
     }, 300)();
-  }, [isLoading, loadMore, moveHorizontalScroll]);
+  }, [isLoading, loadMore, moveHorizontalScroll, triggerVisibleViewportChange]);
 
   const handleGoDate = useCallback(
     (date: dayjs.Dayjs) => {
@@ -203,8 +239,10 @@ const CalendarProvider = ({
 
       setDate(date);
       onRangeChange?.(range);
+      // Trigger viewport change after a short delay
+      setTimeout(triggerVisibleViewportChange, 400);
     },
-    [isLoading, onRangeChange, range]
+    [isLoading, onRangeChange, range, triggerVisibleViewportChange]
   );
 
   const zoomIn = () => changeZoom(zoom + 1);
@@ -216,6 +254,8 @@ const CalendarProvider = ({
     setZoom(zoomLevel);
     setCols(getCols(zoomLevel));
     onRangeChange?.(range);
+    // Trigger viewport change after zoom change
+    setTimeout(triggerVisibleViewportChange, 400);
   };
 
   const handleFilterData = () => onFilterData?.();
