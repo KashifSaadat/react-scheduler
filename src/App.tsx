@@ -34,6 +34,8 @@ function App() {
     endDate: new Date()
   });
 
+  const [currentZoom, setCurrentZoom] = useState<0 | 1 | 2>(0);
+
   const handleRangeChange = useCallback((range: ParsedDatesRange) => {
     setRange(range);
   }, []);
@@ -44,6 +46,15 @@ function App() {
       start: viewport.startDate.toLocaleDateString(),
       end: viewport.endDate.toLocaleDateString()
     });
+  }, []);
+
+  const handleZoomChange = useCallback((zoom: 0 | 1 | 2) => {
+    setCurrentZoom(zoom);
+    console.log("Zoom level changed:", zoom, {
+      0: "Weeks",
+      1: "Days", 
+      2: "Hours"
+    }[zoom]);
   }, []);
 
   const filteredData = useMemo(
@@ -100,6 +111,10 @@ function App() {
         <br />
         <strong>Visible Viewport:</strong> {visibleViewport.startDate.toLocaleDateString()} - {visibleViewport.endDate.toLocaleDateString()}
         <br />
+        <strong>Current Zoom:</strong> {currentZoom} ({
+          { 0: "Weeks", 1: "Days", 2: "Hours" }[currentZoom]
+        })
+        <br />
         <strong>Projects in Visible Viewport:</strong> {visibleFilteredData.reduce((total, person) => total + person.data.length, 0)}
       </div>
       
@@ -108,6 +123,7 @@ function App() {
           startDate={values.startDate ? new Date(values.startDate).toISOString() : undefined}
           onRangeChange={handleRangeChange}
           onVisibleViewportChange={handleVisibleViewportChange}
+          onZoomChange={handleZoomChange}
           data={filteredData}
           isLoading={false}
           onTileClick={handleTileClick}
@@ -121,6 +137,7 @@ function App() {
             startDate={values.startDate ? new Date(values.startDate).toISOString() : undefined}
             onRangeChange={handleRangeChange}
             onVisibleViewportChange={handleVisibleViewportChange}
+            onZoomChange={handleZoomChange}
             isLoading={false}
             data={filteredData}
             onTileClick={handleTileClick}

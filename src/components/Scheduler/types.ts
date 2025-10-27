@@ -13,6 +13,7 @@ export type SchedulerProps = {
   startDate?: string;
   onRangeChange?: (range: ParsedDatesRange) => void;
   onVisibleViewportChange?: (viewport: ParsedDatesRange) => void;
+  onZoomChange?: (zoom: 0 | 1 | 2) => void;
   onTileClick?: (data: SchedulerProjectData) => void;
   onFilterData?: () => void;
   onClearFilterData?: () => void;

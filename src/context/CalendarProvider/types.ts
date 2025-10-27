@@ -37,6 +37,7 @@ export type CalendarProviderProps = {
   config: Config;
   onRangeChange?: (range: ParsedDatesRange) => void;
   onVisibleViewportChange?: (viewport: ParsedDatesRange) => void;
+  onZoomChange?: (zoom: 0 | 1 | 2) => void;
   onFilterData?: () => void;
   onClearFilterData?: () => void;
 };

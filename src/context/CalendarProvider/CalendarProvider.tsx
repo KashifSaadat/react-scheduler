@@ -38,6 +38,7 @@ const CalendarProvider = ({
   defaultStartDate = dayjs(),
   onRangeChange,
   onVisibleViewportChange,
+  onZoomChange,
   onFilterData,
   onClearFilterData
 }: CalendarProviderProps) => {
@@ -251,9 +252,11 @@ const CalendarProvider = ({
 
   const changeZoom = (zoomLevel: number) => {
     if (!isAvailableZoom(zoomLevel)) return;
-    setZoom(zoomLevel);
-    setCols(getCols(zoomLevel));
+    const newZoom = zoomLevel as 0 | 1 | 2;
+    setZoom(newZoom);
+    setCols(getCols(newZoom));
     onRangeChange?.(range);
+    onZoomChange?.(newZoom);
     // Trigger viewport change after zoom change
     setTimeout(triggerVisibleViewportChange, 400);
   };
