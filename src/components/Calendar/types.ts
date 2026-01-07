@@ -1,4 +1,4 @@
-import { SchedulerData, SchedulerItemClickData, SchedulerProjectData } from "@/types/global";
+import { PendingTileUpdate, SchedulerData, SchedulerItemClickData, SchedulerProjectData } from "@/types/global";
 
 export type CalendarProps = {
   data: SchedulerData;
@@ -6,6 +6,8 @@ export type CalendarProps = {
   onTileClick?: (data: SchedulerProjectData) => void;
   onItemClick?: (data: SchedulerItemClickData) => void;
   toggleTheme?: () => void;
+  editable?: boolean;
+  onTileDragEnd?: (update: PendingTileUpdate) => void;
 };
 
 export type StyledSpanProps = {

@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { createMockData } from "./mock/appMock";
 import { ParsedDatesRange } from "./utils/getDatesRange";
-import { ConfigFormValues, SchedulerProjectData } from "./types/global";
+import { ConfigFormValues, SchedulerProjectData, TileUpdatePayload } from "./types/global";
 import ConfigPanel from "./components/ConfigPanel";
 import { StyledSchedulerFrame } from "./styles";
 import { Scheduler } from ".";
@@ -95,6 +95,16 @@ function App() {
       `Item ${data.title} - ${data.subtitle} was clicked. \n==============\nStart date: ${data.startDate} \n==============\nEnd date: ${data.endDate}\n==============\nOccupancy: ${data.occupancy}`
     );
 
+  const handleTileUpdate = useCallback((payload: TileUpdatePayload) => {
+    console.log("Tile updated:", {
+      id: payload.id,
+      newStartDate: payload.startDate.toISOString(),
+      newEndDate: payload.endDate.toISOString()
+    });
+    // In a real app, you would update your data source here
+    // e.g., call an API or update state
+  }, []);
+
   return (
     <>
       <ConfigPanel values={values} onSubmit={setValues} />
@@ -128,8 +138,9 @@ function App() {
           isLoading={false}
           onTileClick={handleTileClick}
           onFilterData={handleFilterData}
-          config={{ zoom: 0, maxRecordsPerPage: maxRecordsPerPage, showThemeToggle: true }}
+          config={{ zoom: 0, maxRecordsPerPage: maxRecordsPerPage, showThemeToggle: true, editable: true }}
           onItemClick={(data) => console.log("clicked: ", data)}
+          onTileUpdate={handleTileUpdate}
         />
       ) : (
         <StyledSchedulerFrame>
@@ -143,6 +154,8 @@ function App() {
             onTileClick={handleTileClick}
             onFilterData={handleFilterData}
             onItemClick={(data) => console.log("clicked: ", data)}
+            config={{ zoom: 0, editable: true }}
+            onTileUpdate={handleTileUpdate}
           />
         </StyledSchedulerFrame>
       )}

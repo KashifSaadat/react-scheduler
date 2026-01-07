@@ -65,3 +65,4 @@ export const getVisibleViewport = (date: dayjs.Dayjs, zoom: number): ParsedDates
     endDate: visibleEndDate.toDate()
   };
 };
+
