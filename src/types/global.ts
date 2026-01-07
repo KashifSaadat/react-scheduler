@@ -55,6 +55,11 @@ export type Config = {
   maxZoom?: (typeof allZoomLevel)[number];
   dateFormat?: string;
   timeFormat?: string;
+  /**
+   * Enable drag and resize functionality for tiles
+   * @default false
+   */
+  editable?: boolean;
 };
 
 export type Theme = {
@@ -196,4 +201,17 @@ export type TooltipData = {
   coords: Coords;
   resourceIndex: number;
   disposition: OccupancyData;
+};
+
+export type TileUpdatePayload = {
+  id: string;
+  startDate: Date;
+  endDate: Date;
+};
+
+export type PendingTileUpdate = TileUpdatePayload & {
+  originalStartDate: Date;
+  originalEndDate: Date;
+  title: string;
+  subtitle?: string;
 };

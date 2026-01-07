@@ -14,3 +14,5 @@ export { default as ConfigPanel } from "./ConfigPanel";
 export { default as Tooltip } from "./Tooltip";
 export { default as PaginationButton } from "./PaginationButton";
 export { default as Toggle } from "./Toggle";
+export { default as ConfirmDialog } from "./ConfirmDialog";
+export { default as Toast } from "./Toast";

@@ -1,14 +1,16 @@
 import { ThemeProvider } from "styled-components";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { Calendar } from "@/components";
 import CalendarProvider from "@/context/CalendarProvider";
 import LocaleProvider from "@/context/LocaleProvider";
 import { darkTheme, GlobalStyle, theme } from "@/styles";
-import { Config } from "@/types/global";
+import { Config, PendingTileUpdate, TileUpdatePayload } from "@/types/global";
 import { outsideWrapperId } from "@/constants";
 import { SchedulerProps } from "./types";
 import { StyledInnerWrapper, StyledOutsideWrapper } from "./styles";
+import ConfirmDialog from "../ConfirmDialog";
+import Toast from "../Toast";
 
 const Scheduler = ({
   data,
@@ -21,6 +23,7 @@ const Scheduler = ({
   onFilterData,
   onClearFilterData,
   onItemClick,
+  onTileUpdate,
   isLoading
 }: SchedulerProps) => {
   const appConfig: Config = useMemo(
@@ -32,6 +35,7 @@ const Scheduler = ({
       translations: undefined,
       dateFormat: "dddd DD.MM.YYYY",
       timeFormat: "HH:00",
+      editable: false,
       ...config
     }),
     [config]
@@ -44,6 +48,12 @@ const Scheduler = ({
   const toggleTheme = () => {
     themeMode === "light" ? setThemeMode("dark") : setThemeMode("light");
   };
+
+  // State for edit confirmation and undo
+  const [pendingUpdate, setPendingUpdate] = useState<PendingTileUpdate | null>(null);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [lastConfirmedUpdate, setLastConfirmedUpdate] = useState<PendingTileUpdate | null>(null);
 
   const currentTheme = themeMode === "light" ? theme : darkTheme;
   const customColors = appConfig.theme ? appConfig.theme[currentTheme.mode] : {};
@@ -67,6 +77,53 @@ const Scheduler = ({
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Handle tile drag end - show confirmation dialog
+  const handleTileDragEnd = useCallback((update: PendingTileUpdate) => {
+    setPendingUpdate(update);
+    setShowConfirmDialog(true);
+  }, []);
+
+  // Confirm the update
+  const handleConfirmUpdate = useCallback(() => {
+    if (pendingUpdate && onTileUpdate) {
+      const payload: TileUpdatePayload = {
+        id: pendingUpdate.id,
+        startDate: pendingUpdate.startDate,
+        endDate: pendingUpdate.endDate
+      };
+      onTileUpdate(payload);
+      setLastConfirmedUpdate(pendingUpdate);
+      setShowToast(true);
+    }
+    setShowConfirmDialog(false);
+    setPendingUpdate(null);
+  }, [pendingUpdate, onTileUpdate]);
+
+  // Cancel the update
+  const handleCancelUpdate = useCallback(() => {
+    setShowConfirmDialog(false);
+    setPendingUpdate(null);
+  }, []);
+
+  // Undo the last update
+  const handleUndo = useCallback(() => {
+    if (lastConfirmedUpdate && onTileUpdate) {
+      const undoPayload: TileUpdatePayload = {
+        id: lastConfirmedUpdate.id,
+        startDate: lastConfirmedUpdate.originalStartDate,
+        endDate: lastConfirmedUpdate.originalEndDate
+      };
+      onTileUpdate(undoPayload);
+    }
+    setLastConfirmedUpdate(null);
+  }, [lastConfirmedUpdate, onTileUpdate]);
+
+  // Dismiss toast
+  const handleDismissToast = useCallback(() => {
+    setShowToast(false);
+    setLastConfirmedUpdate(null);
   }, []);
 
   if (!outsideWrapperRef.current) null;
@@ -99,9 +156,26 @@ const Scheduler = ({
                   topBarWidth={topBarWidth ?? 0}
                   onItemClick={onItemClick}
                   toggleTheme={toggleTheme}
+                  editable={appConfig.editable}
+                  onTileDragEnd={handleTileDragEnd}
                 />
               </StyledInnerWrapper>
             </StyledOutsideWrapper>
+            <ConfirmDialog
+              isOpen={showConfirmDialog}
+              pendingUpdate={pendingUpdate}
+              onConfirm={handleConfirmUpdate}
+              onCancel={handleCancelUpdate}
+              dateFormat={appConfig.dateFormat}
+              timeFormat={appConfig.timeFormat}
+            />
+            <Toast
+              isVisible={showToast}
+              message="Schedule updated successfully"
+              onUndo={handleUndo}
+              onDismiss={handleDismissToast}
+              duration={5000}
+            />
           </CalendarProvider>
         </LocaleProvider>
       </ThemeProvider>
