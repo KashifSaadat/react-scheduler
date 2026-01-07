@@ -17,6 +17,9 @@ function App() {
     isFullscreen: true
   });
 
+  // Controlled search state - persists across re-renders and data changes
+  const [searchValue, setSearchValue] = useState("");
+
   const { peopleCount, projectsPerYear, yearsCovered, isFullscreen, maxRecordsPerPage } = values;
 
   const mocked = useMemo(
@@ -126,6 +129,21 @@ function App() {
         })
         <br />
         <strong>Projects in Visible Viewport:</strong> {visibleFilteredData.reduce((total, person) => total + person.data.length, 0)}
+        <br />
+        <strong>Controlled Search:</strong> "{searchValue}" 
+        <button 
+          onClick={() => setSearchValue("")} 
+          style={{ marginLeft: '8px', cursor: 'pointer' }}
+          disabled={!searchValue}
+        >
+          Clear
+        </button>
+        <button 
+          onClick={() => setSearchValue("Person 1")} 
+          style={{ marginLeft: '8px', cursor: 'pointer' }}
+        >
+          Set "Person 1"
+        </button>
       </div>
       
       {isFullscreen ? (
@@ -141,6 +159,8 @@ function App() {
           config={{ zoom: 0, maxRecordsPerPage: maxRecordsPerPage, showThemeToggle: true, editable: true }}
           onItemClick={(data) => console.log("clicked: ", data)}
           onTileUpdate={handleTileUpdate}
+          searchValue={searchValue}
+          onSearchChange={setSearchValue}
         />
       ) : (
         <StyledSchedulerFrame>
@@ -156,6 +176,8 @@ function App() {
             onItemClick={(data) => console.log("clicked: ", data)}
             config={{ zoom: 0, editable: true }}
             onTileUpdate={handleTileUpdate}
+            searchValue={searchValue}
+            onSearchChange={setSearchValue}
           />
         </StyledSchedulerFrame>
       )}

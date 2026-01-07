@@ -24,7 +24,10 @@ const Scheduler = ({
   onClearFilterData,
   onItemClick,
   onTileUpdate,
-  isLoading
+  isLoading,
+  searchValue,
+  onSearchChange,
+  defaultSearchValue
 }: SchedulerProps) => {
   const appConfig: Config = useMemo(
     () => ({
@@ -158,6 +161,9 @@ const Scheduler = ({
                   toggleTheme={toggleTheme}
                   editable={appConfig.editable}
                   onTileDragEnd={handleTileDragEnd}
+                  searchValue={searchValue}
+                  onSearchChange={onSearchChange}
+                  defaultSearchValue={defaultSearchValue}
                 />
               </StyledInnerWrapper>
             </StyledOutsideWrapper>
