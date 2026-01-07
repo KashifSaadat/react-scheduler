@@ -1,4 +1,5 @@
 import { PendingTileUpdate, SchedulerData, SchedulerItemClickData, SchedulerProjectData } from "@/types/global";
+import { SearchChangeHandler } from "@/components/Scheduler/types";
 
 export type CalendarProps = {
   data: SchedulerData;
@@ -8,6 +9,18 @@ export type CalendarProps = {
   toggleTheme?: () => void;
   editable?: boolean;
   onTileDragEnd?: (update: PendingTileUpdate) => void;
+  /**
+   * Controlled search value. When provided, the search input becomes controlled.
+   */
+  searchValue?: string;
+  /**
+   * Callback fired when the search value changes.
+   */
+  onSearchChange?: SearchChangeHandler;
+  /**
+   * Default search value for uncontrolled mode.
+   */
+  defaultSearchValue?: string;
 };
 
 export type StyledSpanProps = {

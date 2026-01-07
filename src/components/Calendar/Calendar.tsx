@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useCallback, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import debounce from "lodash.debounce";
 import { useCalendar } from "@/context/CalendarProvider";
 import { Day, SchedulerData, SchedulerProjectData, TooltipData, ZoomLevel } from "@/types/global";
@@ -26,12 +26,38 @@ export const Calendar: FC<CalendarProps> = ({
   toggleTheme,
   topBarWidth,
   editable,
-  onTileDragEnd
+  onTileDragEnd,
+  searchValue,
+  onSearchChange,
+  defaultSearchValue = ""
 }) => {
   const [tooltipData, setTooltipData] = useState<TooltipData>(initialTooltipData);
   const [filteredData, setFilteredData] = useState(data);
   const [isVisible, setIsVisible] = useState(false);
-  const [searchPhrase, setSearchPhrase] = useState("");
+
+  // Determine if search is controlled
+  const isControlled = searchValue !== undefined;
+
+  // Internal state for uncontrolled mode
+  const [internalSearchValue, setInternalSearchValue] = useState(defaultSearchValue);
+
+  // Use controlled value if provided, otherwise internal state
+  const searchPhrase = isControlled ? searchValue : internalSearchValue;
+
+  // Warn if controlled but no onChange handler
+  const hasWarnedRef = useRef(false);
+  useEffect(() => {
+    if (isControlled && !onSearchChange && !hasWarnedRef.current) {
+      console.warn(
+        "react-scheduler: `searchValue` prop provided without `onSearchChange`. " +
+          "The search input will be read-only."
+      );
+      hasWarnedRef.current = true;
+    }
+  }, [isControlled, onSearchChange]);
+
+  // Memoize effective search value for filtering
+  const effectiveSearchValue = useMemo(() => searchPhrase, [searchPhrase]);
   const {
     zoom,
     startDate,
@@ -92,7 +118,15 @@ export const Calendar: FC<CalendarProps> = ({
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     const phrase = event.target.value;
-    setSearchPhrase(phrase);
+
+    // Only update internal state in uncontrolled mode
+    if (!isControlled) {
+      setInternalSearchValue(phrase);
+    }
+
+    // Always notify parent if callback provided
+    onSearchChange?.(phrase);
+
     debouncedFilterData.current.cancel();
     debouncedFilterData.current(data, phrase);
   };
@@ -119,11 +153,27 @@ export const Calendar: FC<CalendarProps> = ({
     };
   }, [debouncedHandleMouseOver, handleMouseLeave, projectsPerPerson, rowsPerItem, startDate, zoom]);
 
-  useEffect(() => {
-    if (searchPhrase) return;
+  // Track previous search value to detect external changes (for controlled mode)
+  const prevSearchValueRef = useRef(effectiveSearchValue);
 
-    setFilteredData(data);
-  }, [data, searchPhrase]);
+  // Update filtered data when search phrase changes (controlled mode) or data changes
+  useEffect(() => {
+    // Reset pagination if search value changed (handles controlled mode external updates)
+    if (prevSearchValueRef.current !== effectiveSearchValue) {
+      reset();
+      prevSearchValueRef.current = effectiveSearchValue;
+    }
+
+    if (effectiveSearchValue) {
+      // Apply filter with current search phrase
+      const filtered = data.filter((item) =>
+        item.label.title.toLowerCase().includes(effectiveSearchValue.toLowerCase())
+      );
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(data);
+    }
+  }, [data, effectiveSearchValue, reset]);
 
   return (
     <StyledOuterWrapper className="calendar-outer-wrapper">
